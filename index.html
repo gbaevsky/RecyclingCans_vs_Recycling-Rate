@@ -1,10 +1,14 @@
 <html>
+
 <head>
-  <meta charset="UTF-8">
-  <title> Homework 6 Due at 11:59pm Wednesday, October 5 </title>
+  <title>INFO 3300 - Project 1</title>
+
   <script src="https://d3js.org/d3.v7.min.js"></script>
 
   <style>
+    .legend span {
+      margin-right: 10px;
+    }
 
     .gridlines line {
       stroke: #bbb;
@@ -13,102 +17,237 @@
     .gridlines .domain {
       stroke: none;
     }
-
   </style>
 
 </head>
+
 <body>
+  <div class="container larger">
 
-  <h3> Glenn Baevsky (ghb65) </h3>
+    <p style="margin-top: 50px;">Scatterplot:</p>
 
-  <p id = "p1">
-    Problem 1 <br>
-
-    <svg id="linechart" height="400" width="800">
+    <svg id="scatterplot" height="400" width="600" style="margin-top:50px">
+      <text id="label" x="590" y="5" text-anchor="end" alignment-baseline="hanging"></text>
     </svg>
 
-    <script>
 
-    const svg = d3.select("svg#linechart");
-    const width = svg.attr("width");
-    const height = svg.attr("height");
-    const margin = {top: 10, right: 10, bottom: 50, left: 50};
-    const chartWidth = width - margin.left - margin.right;
-    const chartHeight = height - margin.top - margin.bottom;
 
-    let annotations = svg.append("g").attr("id","annotations");
-    let chartArea = svg.append("g").attr("id","points")
-                  .attr("transform",`translate(${margin.left},${margin.top})`);
+    <!-- This block will be automatically filled with syntax-highlighted code from the script below -->
+    <h5>Code for today:</h5>
+    <pre>
+      <code id="display1" class="hljs javascript">
+      </code>
+    </pre>
+    <pre>
+      <code id="display2" class="hljs javascript">
+      </code>
+    </pre>
 
-      d3.json('mariokart_records.json').then( (data) => {
-        console.log(data);
+    <script id="notes2">
 
-        const timeParser = d3.timeParse('%Y-%m-%d');
-        data['early_date'] = timeParser(data["earliest_date"]);
-        data['late_date'] = timeParser(data["latest_date"]);
 
-        const timeScale = d3.scaleTime().domain([data['early_date'], data['late_date']]).range([0,chartWidth]);
-        const valueScale = d3.scaleLinear().domain([data['min_value'], data['max_value']]).range([chartHeight, 0]);
+      // ------ We're going to edit the code from last week to use a data join ------
+      //   Scroll down to the forEach!
 
-        const timedata = data.timeseries;
-        console.log(timedata);
+      const svg = d3.select("svg#scatterplot");
+      const width = svg.attr("width");
+      const height = svg.attr("height");
+      const margin = { top: 10, right: 10, bottom: 50, left: 50 };
+      const chartWidth = width - margin.left - margin.right;
+      const chartHeight = height - margin.top - margin.bottom;
 
-        const colorExtent = d3.extent(timedata, d => d['track']);
-        const colorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(colorExtent);
+      let annotations = svg.append("g").attr("id", "annotations");
+      let chartArea = svg.append("g").attr("id", "points")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        // Y axis
-        let leftAxis = d3.axisLeft(valueScale)
-        let leftGridlines = d3.axisLeft(valueScale)
-                              .tickSize(-chartWidth-10)
-                              .tickFormat("")
-        annotations.append("g")
-          .attr("class", "y axis")
-          .attr("transform",`translate(${margin.left-10},${margin.top})`)
-          .call(leftAxis)
-        annotations.append("g")
-          .attr("class", "y gridlines")
-          .attr("transform",`translate(${margin.left-10},${margin.top})`)
-          .call(leftGridlines);
+      // Import some CSV data
+      d3.csv("Public_Recycling_Bins.csv", d3.autoType)
+        .then((data) => {
 
-        // X axis
-        let bottomAxis = d3.axisBottom(timeScale)
-        let bottomGridlines = d3.axisBottom(timeScale)
-                                .tickSize(-chartHeight-10)
-                                .tickFormat("")
-        annotations.append("g")
-          .attr("class", "x axis")
-          .attr("transform",`translate(${margin.left},${chartHeight+margin.top+10})`)
-          .call(bottomAxis);
-        annotations.append("g")
-          .attr("class", "x gridlines")
-          .attr("transform",`translate(${margin.left},${chartHeight+margin.top+10})`)
-          .call(bottomGridlines);
+          //Check for data issues
+          // data.forEach(d => {
+          //   d['worldwide_gross'] = Number(d['worldwide_gross'].replace(/,/g, "").replace(/\$/g, ""));
+          // });
 
-          var lineGen = d3.line()
-                 .x( d => timeScale(timeParser(d['date'])) )
-                 .y( d => valueScale(d['record_time']) );
+          let bronx = 0;
+          let queens = 0;
+          let manhattan = 0;
+          let brooklyn = 0;
+          let staten_island = 0;
+          data.forEach(function (d) {
+            if (d.Borough == 'Bronx') {
+              bronx++;
+            }
+            else if (d.Borough == 'Queens') {
+              queens++;
+            }
+            else if (d.Borough == 'Manhattan') {
+              manhattan++;
+            }
+            else if (d.Borough == 'Brooklyn') {
+              brooklyn++;
+            }
+            else {
+              staten_island++;
+            }
 
-         paths = chartArea.selectAll('g.path').data(timedata)
-               .join('g')
-               .attr("class", "path")
-               .style("stroke", d => colorScale(d.track));
+            console.log("bronx: " + bronx);
+            console.log("queens: " + queens);
+            console.log("m:" + manhattan);
+            console.log("b:" + brooklyn);
+            console.log("si:" + staten_island);
 
-          paths.append("path")
-                .attr("fill", "none")
-                .attr("stroke-width", 2)
-                .attr('d', d => lineGen( d.values ));
 
-          paths.selectAll('circle')
-              .data(d => d.values)
-              .join('circle')
-              .attr("r", 2)
-              .attr("cx", d => timeScale(timeParser(d['date'])) )
-              .attr("cy", d => valueScale(d['record_time']) )
-              .attr("fill", d => colorScale(d.track));
-      });
+          });
 
-      </script>
-    </p>
+          d3.csv("Recycling_Diversion_and_Capture_Rates.csv", d3.autoType)
+            .then((data) => {
 
+              let bronx_recycling = 0;
+              let queens_recycling = 0;
+              let manhattan_recycling = 0;
+              let brooklyn_recycling = 0;
+              let staten_island_recycling = 0;
+              data.forEach(function (d) {
+                if (d.Zone == 'Bronx') {
+                  bronx_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
+                }
+                else if (d.Zone == 'Queens') {
+                  queens_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
+                }
+                else if (d.Zone == 'Manhattan') {
+                  manhattan_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
+                }
+                else if (d.Zone == 'Brooklyn') {
+                  brooklyn_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
+                }
+                else {
+                  staten_island_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
+                }
+              });
+
+              console.log("bronx_r: " + bronx_recycling);
+              console.log("queens_r: " + queens_recycling);
+              console.log("m_r:" + manhattan_recycling);
+              console.log("b_r:" + brooklyn_recycling);
+              console.log("si_r:" + staten_island_recycling);
+
+              // Scales
+              const yearExtent = d3.extent(data, d => d['year']);
+              const yearScale = d3.scaleLinear().domain(yearExtent).range([0, chartWidth]);
+              const grossExtent = d3.extent(data, d => d['worldwide_gross']);
+              const grossScale = d3.scaleLog().domain(grossExtent).range([chartHeight, 0]);
+              const imdbExtent = d3.extent(data, d => d['imdb_rating']);
+              const imdbScale = d3.scaleLinear().domain(imdbExtent).range([3, 8]);
+              const genreScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+              // Y axis
+              let leftAxis = d3.axisLeft(grossScale)
+                .tickFormat(d3.format("$.0s"))
+              let leftGridlines = d3.axisLeft(grossScale)
+                .tickSize(-chartWidth - 10)
+                .tickFormat("")
+              annotations.append("g")
+                .attr("class", "y axis")
+                .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
+                .call(leftAxis)
+              annotations.append("g")
+                .attr("class", "y gridlines")
+                .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
+                .call(leftGridlines);
+
+              // X axis
+              let bottomAxis = d3.axisBottom(yearScale)
+                .tickFormat(d3.format("~f"));
+              let bottomGridlines = d3.axisBottom(yearScale)
+                .tickSize(-chartHeight - 10)
+                .tickFormat("")
+              annotations.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top + 10) + ")")
+                .call(bottomAxis);
+              annotations.append("g")
+                .attr("class", "x gridlines")
+                .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top + 10) + ")")
+                .call(bottomGridlines);
+
+
+              // 1. Eliminate the data.forEach( (d, i) => { } )
+
+              //  Update it using a data join!
+              //  We can replace the .forEach with a .data().join() call
+              //  While in the .forEach we had our own function (d, i) => {}, in the join things work differently
+              //  We make use of the fact that commands like .attr and .style can access the element's data value
+              //   in order to dynamically apply styles based on data -- this is d3's main selling point
+              //  Though we use "d" here by convention, we're just putting a function into the second parameter of
+              //   .attr() instead of a fixed value. The function has one parameter, the data row for that element
+              let circles = chartArea.selectAll("circle").data(data)
+                .join("circle")
+                .attr("cx", d => yearScale(d['year']))
+                .attr("cy", d => grossScale(d['worldwide_gross'] + 1))
+                .attr("r", d => imdbScale(d['imdb_rating']))
+                .style("fill", d => genreScale(d['Main_Genre']))
+                .attr("opacity", 0.8);
+
+
+              // 2. Add some mouseovers
+              //    Mouseover triggers when mouse enters object's region
+              //    Mouseout triggers when mouse leaves the object's region
+              //  WARNING: Avoid placing new elements on top of an object when using mouseover
+              //           This can cause the two objects to fight, creating oscillating patterns
+              //    This could also be written as chartArea.selectAll("circle").on() but storing a var is more efficient
+              circles.on("mouseover", function () {
+
+                // This is the first time we've seen *this*    (asterisks just for emphasis)
+                // When you're working with interactive events, you sometimes get access to *this*, a reserved
+                //  keywork in Javascript for cases like mouseovers
+                // *this* only works if you use function() at the top --- NO ANONYMOUS FUNCTIONS IN EVENTS
+                // In the case of a mouseover, *this* refers to the thing you're mousing over
+                // It means different things in different contexts - always check document
+
+                d3.select(this)
+                  .transition().duration(200)
+                  .attr("stroke-width", 4) // for some reason, .attr works better for animating strokes
+                  .attr("stroke", "black")
+                  .style("fill", d => lighten(genreScale(d['Main_Genre'])));
+
+                // How do we get the data of a specific SVG object? We had d before from the .forEach
+                //  but now we don't have it because of the join -- we need to access the element's data values somehow
+
+                // Use the .datum() command!  (the singular form of "data")
+                // (You can also use this to bind a big dataset to one object to do nested data joins)
+                let title = d3.select(this).datum()['title']
+
+                d3.select("#label")
+                  .text(title);
+              });
+
+              // Same story for the mouseout, but we don't have the title complication
+              circles.on("mouseout", function () {
+                // Make sure you use plain *this* and don't try to wrap it with quotes like "this"
+                // It's a special reserved word
+
+                d3.select(this)
+                  .transition().duration(200)  // to fix the appearance bug from the lecture, add a transition here too
+                  .attr("stroke-width", 1)      //   it will override the old transition, preventing any values from getting
+                  .attr("stroke", "none")       //   "stuck" and not reset properly
+                  .style("fill", d => genreScale(d['Main_Genre']));
+
+                d3.select("#label")
+                  .text("");
+              });
+
+              // This approach would NOT work if you needed to frequently join the circles (e.g. with a slider)
+              // It risks adding multiple copies of mouseover events - you need to use ENTER separately in an extended join
+
+            })
+
+        });
+
+    </script>
+
+
+  </div>
 </body>
+
 </html>
