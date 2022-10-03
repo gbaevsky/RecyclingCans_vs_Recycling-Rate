@@ -24,7 +24,7 @@
 <body>
   <div class="container larger">
 
-    <svg id="barchart" height="400" width="600">
+    <svg id="barchart" height="400" width="600" style="background: #F5F5FF">
     </svg>
 
     <svg id="barchart1" height="400" width="600">
@@ -120,47 +120,63 @@
               d3.csv("New_York_City_Population_by_Borough__1950_-_2040.csv", d3.autoType)
                 .then((data3) => {
 
-                  const popExtent = d3.extent(data3, d => d['2020']);
-                  const popScale = d3.scaleLinear().domain(popExtent).range([10, chartWidth]);
+                  // BAR CHARTS
 
-                  const binsExtent = d3.extent([bronx, queens, manhattan, brooklyn, staten_island]);
-                  const binsScale = d3.scaleLinear().domain(binsExtent).range([10, chartWidth]);
+                  const popExtent = d3.extent(data3, d => d['2020']);
+                  const popScale = d3.scaleLinear().domain(popExtent).range([50, width - 10]);
+
+                  percentScale = d3.scaleLinear()
+                    .domain([0, 1])
+                    .range([height - 10, 30]);
+
+                  let colorScale = d3.scaleLinear()
+                    .domain([0, 1])
+                    .range(['navy', 'turquoise'])
+                    .interpolate(d3.interpolateHcl);
+
+                  svg_bar.append("text").text("Population by Borough").attr("x", 10).attr("y", 20).style("font-size", "15px");
 
                   data3.forEach((d, i) => {
                     svg_bar.append("line")
                       .attr("x1", popScale(d['2020']))
                       .attr("x2", popScale(d['2020']))
-                      .attr("y1", height / 2)
-                      .attr("y2", height / 2 - popScale(d['2020']))
-                      .style("stroke", "#5555F0")
-                      .style("stroke-width", 20)
-                      .style("padding", 10);
+                      .attr("y1", height - 10)
+                      .attr("y2", height - popScale(d['2020']))
+                      .style("stroke", colorScale(d['2020']))
+                      .style("stroke-width", 10);
 
                     svg_bar.append("text")
                       .attr("text-anchor", "middle")
                       .attr("font-size", "10px")
                       .attr("x", popScale(d['2020']))
-                      .attr('y', 100)
-                      .text(d['2020']);
+                      .attr('y', popScale(d['2020']) + 50)
+                      .text(d['Borough'] + ': ' + d['2020']);
                   });
 
-                  number_bins_per_bur.forEach((d, i) => {
-                    svg_bar1.append("line")
-                      .attr("x1", binsScale(d['pop']))
-                      .attr("x2", binsScale(d['pop']))
-                      .attr("y1", height / 2)
-                      .attr("y2", height / 2 - binsScale(d['pop']))
-                      .style("stroke", "#5555F0")
-                      .style("stroke-width", 20)
-                      .style("padding", 10);
+                  const binsExtent = d3.extent([bronx, queens, manhattan, brooklyn, staten_island]);
+                  const binsScale = d3.scaleLinear().domain(binsExtent).range([10, chartWidth]);
 
-                    svg_bar1.append("text")
-                      .attr("text-anchor", "middle")
-                      .attr("font-size", "10px")
-                      .attr("x", binsScale(d['pop']))
-                      .attr('y', 100)
-                      .text(d['pop']);
-                  });
+                  // number_bins_per_bur.forEach((d, i) => {
+                  //   svg_bar1.append("line")
+                  //     .attr("x1", binsScale(d['pop']))
+                  //     .attr("x2", binsScale(d['pop']))
+                  //     .attr("y1", height / 2)
+                  //     .attr("y2", height / 2 - binsScale(d['pop']))
+                  //     .style("stroke", "#5555F0")
+                  //     .style("stroke-width", 20)
+                  //     .style("padding", 10);
+
+                  //   svg_bar1.append("text")
+                  //     .attr("text-anchor", "middle")
+                  //     .attr("font-size", "10px")
+                  //     .attr("x", binsScale(d['pop']))
+                  //     .attr('y', 100)
+                  //     .text(d['pop']);
+                  // });
+
+
+
+                  // SCATTERPLOT
 
                   // Scales
                   // const yearExtent = d3.extent(data, d => d['year']);
@@ -172,34 +188,34 @@
                   // const genreScale = d3.scaleOrdinal(d3.schemeCategory10);
 
                   // Y axis
-                  let leftAxis = d3.axisLeft(grossScale)
-                    .tickFormat(d3.format("$.0s"))
-                  let leftGridlines = d3.axisLeft(grossScale)
-                    .tickSize(-chartWidth - 10)
-                    .tickFormat("")
-                  annotations.append("g")
-                    .attr("class", "y axis")
-                    .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
-                    .call(leftAxis)
-                  annotations.append("g")
-                    .attr("class", "y gridlines")
-                    .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
-                    .call(leftGridlines);
+                  // let leftAxis = d3.axisLeft(grossScale)
+                  //   .tickFormat(d3.format("$.0s"))
+                  // let leftGridlines = d3.axisLeft(grossScale)
+                  //   .tickSize(-chartWidth - 10)
+                  //   .tickFormat("")
+                  // annotations.append("g")
+                  //   .attr("class", "y axis")
+                  //   .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
+                  //   .call(leftAxis)
+                  // annotations.append("g")
+                  //   .attr("class", "y gridlines")
+                  //   .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
+                  //   .call(leftGridlines);
 
                   // X axis
-                  let bottomAxis = d3.axisBottom(yearScale)
-                    .tickFormat(d3.format("~f"));
-                  let bottomGridlines = d3.axisBottom(yearScale)
-                    .tickSize(-chartHeight - 10)
-                    .tickFormat("")
-                  annotations.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top + 10) + ")")
-                    .call(bottomAxis);
-                  annotations.append("g")
-                    .attr("class", "x gridlines")
-                    .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top + 10) + ")")
-                    .call(bottomGridlines);
+                  // let bottomAxis = d3.axisBottom(yearScale)
+                  //   .tickFormat(d3.format("~f"));
+                  // let bottomGridlines = d3.axisBottom(yearScale)
+                  //   .tickSize(-chartHeight - 10)
+                  //   .tickFormat("")
+                  // annotations.append("g")
+                  //   .attr("class", "x axis")
+                  //   .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top + 10) + ")")
+                  //   .call(bottomAxis);
+                  // annotations.append("g")
+                  //   .attr("class", "x gridlines")
+                  //   .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top + 10) + ")")
+                  //   .call(bottomGridlines);
                 });
             });
         });
