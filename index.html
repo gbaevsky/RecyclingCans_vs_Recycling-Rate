@@ -90,14 +90,6 @@
             else {
               staten_island++;
             }
-
-            console.log("bronx: " + bronx);
-            console.log("queens: " + queens);
-            console.log("m:" + manhattan);
-            console.log("b:" + brooklyn);
-            console.log("si:" + staten_island);
-
-
           });
 
           d3.csv("Recycling_Diversion_and_Capture_Rates.csv", d3.autoType)
@@ -125,6 +117,12 @@
                   staten_island_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
                 }
               });
+
+              console.log("bronx: " + bronx);
+              console.log("queens: " + queens);
+              console.log("m:" + manhattan);
+              console.log("b:" + brooklyn);
+              console.log("si:" + staten_island);
 
               console.log("bronx_r: " + bronx_recycling);
               console.log("queens_r: " + queens_recycling);
