@@ -27,7 +27,8 @@
     <svg id="barchart" height="400" width="600">
     </svg>
 
-    <p style="margin-top: 50px;">Scatterplot:</p>
+    <svg id="barchart1" height="400" width="600">
+    </svg>
 
     <svg id="scatterplot" height="400" width="600" style="margin-top:50px">
       <text id="label" x="590" y="5" text-anchor="end" alignment-baseline="hanging"></text>
@@ -36,6 +37,7 @@
     <script>
 
       const svg_bar = d3.select("svg#barchart");
+      const svg_bar1 = d3.select("svg#barchart1");
 
       const svg = d3.select("svg#scatterplot");
       const width = svg.attr("width");
@@ -131,17 +133,33 @@
                       .attr("y1", height / 2)
                       .attr("y2", height / 2 - popScale(d['2020']))
                       .style("stroke", "#5555F0")
-                      .style("stroke-width", 10);
+                      .style("stroke-width", 20)
+                      .style("padding", 10);
+
+                    svg_bar.append("text")
+                      .attr("text-anchor", "middle")
+                      .attr("font-size", "10px")
+                      .attr("x", popScale(d['2020']))
+                      .attr('y', 100)
+                      .text(d['2020']);
                   });
 
                   number_bins_per_bur.forEach((d, i) => {
-                    svg_bar.append("line")
+                    svg_bar1.append("line")
                       .attr("x1", binsScale(d['pop']))
                       .attr("x2", binsScale(d['pop']))
                       .attr("y1", height / 2)
                       .attr("y2", height / 2 - binsScale(d['pop']))
                       .style("stroke", "#5555F0")
-                      .style("stroke-width", 10);
+                      .style("stroke-width", 20)
+                      .style("padding", 10);
+
+                    svg_bar1.append("text")
+                      .attr("text-anchor", "middle")
+                      .attr("font-size", "10px")
+                      .attr("x", binsScale(d['pop']))
+                      .attr('y', 100)
+                      .text(d['pop']);
                   });
 
                   // Scales
