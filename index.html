@@ -36,19 +36,25 @@
 
     <script>
 
-      const svg_bar = d3.select("svg#barchart");
-      const svg_bar1 = d3.select("svg#barchart1");
-
       const svg = d3.select("svg#scatterplot");
-      const width = svg.attr("width");
-      const height = svg.attr("height");
+
+      const svg_bar = d3.select("svg#barchart");
+
+      const width = svg_bar.attr("width");
+      const height = svg_bar.attr("height");
       const margin = { top: 10, right: 10, bottom: 50, left: 50 };
       const chartWidth = width - margin.left - margin.right;
       const chartHeight = height - margin.top - margin.bottom;
 
-      let annotations = svg.append("g").attr("id", "annotations");
-      let chartArea = svg.append("g").attr("id", "points")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      let annotations = svg_bar.append("g").attr("id", "annotations");
+      let chartArea = svg_bar.append("g").attr("id", "points")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+      const svg_bar1 = d3.select("svg#barchart1");
+
+      // let annotations = svg.append("g").attr("id", "annotations");
+      // let chartArea = svg.append("g").attr("id", "points")
+      //   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       // Import CSV data using async function
 
@@ -130,12 +136,16 @@
 
         // BAR CHARTS
 
-        const popExtent = d3.extent(data3, d => d['2020']);
-        const popScale = d3.scaleLinear().domain(popExtent).range([50, width - 10]);
+        let bottomAxis = d3.axisBottom()
+        let bottomAxisG = annotations.append("g")
+          .attr("class", "x axis")
+          .attr("transform", `translate(${margin.left},${chartHeight + margin.top + 10})`)
 
-        percentScale = d3.scaleLinear()
-          .domain([0, 1])
-          .range([height - 10, 30]);
+        const popExtent = d3.extent(data3, d => d['2020']);
+        const popScale = d3.scaleLinear().domain(popExtent).range([chartHeight, 0]);
+
+        const bur = d3.map(data3, d => d.Borough);
+        const burScale = d3.scaleBand().domain(bur).range([0, chartWidth]).padding(0.05);
 
         let colorScale = d3.scaleLinear()
           .domain([0, 1])
@@ -144,25 +154,46 @@
 
         svg_bar.append("text").text("Population by Borough").attr("x", 10).attr("y", 20).style("font-size", "15px");
 
-        data3.forEach((d, i) => {
-          svg_bar.append("line")
-            .attr("x1", popScale(d['2020']))
-            .attr("x2", popScale(d['2020']))
-            .attr("y1", height - 10)
-            .attr("y2", height - popScale(d['2020']))
-            .style("stroke", colorScale(d['2020']))
-            .style("stroke-width", 10);
+        bottomAxis.scale(burScale)
+        bottomAxisG.transition().call(bottomAxis);
 
-          svg_bar.append("text")
-            .attr("text-anchor", "middle")
-            .attr("font-size", "10px")
-            .attr("x", popScale(d['2020']))
-            .attr('y', popScale(d['2020']) + 50)
-            .text(d['Borough'] + ': ' + d['2020']);
-        });
+        // data3.forEach((d, i) => {
+        //   svg_bar.append("line")
+        //     .attr("x1", popScale(d['2020']))
+        //     .attr("x2", popScale(d['2020']))
+        //     .attr("y1", height - 10)
+        //     .attr("y2", height - popScale(d['2020']))
+        //     //.style("stroke", colorScale(d['2020']))
+        //     .style("stroke", "black")
+        //     .style("stroke-width", 10);
+        //   svg_bar.append("text")
+        //     .attr("text-anchor", "middle")
+        //     .attr("font-size", "10px")
+        //     .attr("x", popScale(d['2020']))
+        //     .attr('y', popScale(d['2020']) + 50)
+        //     .text(d['Borough'] + ': ' + d['2020']);
+        // });
 
-        const binsExtent = d3.extent([bronx, queens, manhattan, brooklyn, staten_island]);
-        const binsScale = d3.scaleLinear().domain(binsExtent).range([10, chartWidth]);
+        chartArea.selectAll('rect.bar').data(data3)
+          .join('rect')
+          .attr('class', 'bar')
+          .attr("fill", "black")
+          .attr("x", d => burScale(d.borough))
+          .attr("y", d => popScale(d['2020']))
+          .attr("height", d => popScale(d['2020']))
+          .attr("width", burScale.bandwidth());
+
+        chartArea.selectAll('text.bar').data(data3)
+          .join('text')
+          .attr('class', 'bar')
+          .attr("text-anchor", "middle")
+          .attr("font-size", "10px")
+          .attr("x", popScale(d => d['2020']))
+          .attr('y', 50)
+          .text(d => d['2020']);
+
+        // const binsExtent = d3.extent([bronx, queens, manhattan, brooklyn, staten_island]);
+        // const binsScale = d3.scaleLinear().domain(binsExtent).range([10, chartWidth]);
 
         // number_bins_per_bur.forEach((d, i) => {
         //   svg_bar1.append("line")
