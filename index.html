@@ -22,270 +22,259 @@
 </head>
 
 <body>
-  <div class="container larger">
 
-    <svg id="barchart" height="400" width="600" style="background: #F5F5FF">
-    </svg>
+  <svg id="barchart" height="400" width="600" style="background: #F5F5FF">
+  </svg>
 
-    <svg id="barchart1" height="400" width="600" style="background: #F5F5FF">
-    </svg>
+  <svg id="barchart1" height="400" width="600" style="background: #F5F5FF">
+  </svg>
 
-    <svg id="scatterplot1" height="400" width="600" style="margin-top:50px">
-      <text id="label" x="590" y="5" text-anchor="end" alignment-baseline="hanging"></text>
-    </svg>
+  <svg id="scatterplot1" height="400" width="600" style="margin-top:50px">
+    <text id="label" x="590" y="5" text-anchor="end" alignment-baseline="hanging"></text>
+  </svg>
 
-    <script>
+  <script>
 
-      const svg_bar = d3.select("svg#barchart");
+    const svg_bar = d3.select("svg#barchart");
 
-      const width = svg_bar.attr("width");
-      const height = svg_bar.attr("height");
-      const margin = { top: 50, right: 10, bottom: 50, left: 50 };
-      const chartWidth = width - margin.left - margin.right;
-      const chartHeight = height - margin.top - margin.bottom;
+    const width = svg_bar.attr("width");
+    const height = svg_bar.attr("height");
+    const margin = { top: 50, right: 10, bottom: 50, left: 50 };
+    const chartWidth = width - margin.left - margin.right;
+    const chartHeight = height - margin.top - margin.bottom;
 
-      let annotations = svg_bar.append("g").attr("id", "annotations");
-      let chartArea = svg_bar.append("g").attr("id", "points")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
-
+    let annotations = svg_bar.append("g").attr("id", "annotations");
+    let chartArea = svg_bar.append("g").attr("id", "points")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
 
 
-      const svg_bar1 = d3.select("svg#barchart1");
 
-      let annotations1 = svg_bar1.append("g").attr("id", "annotations");
-      let chartArea1 = svg_bar1.append("g").attr("id", "points")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
+    const svg_bar1 = d3.select("svg#barchart1");
 
-      // let annotations = svg.append("g").attr("id", "annotations");
-      // let chartArea = svg.append("g").attr("id", "points")
-      //   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    let annotations1 = svg_bar1.append("g").attr("id", "annotations");
+    let chartArea1 = svg_bar1.append("g").attr("id", "points")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
 
-      // Import CSV data using async function
+    // let annotations = svg.append("g").attr("id", "annotations");
+    // let chartArea = svg.append("g").attr("id", "points")
+    //   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      const dataFunc = async function () {
-        // d3.csv("Public_Recycling_Bins.csv", d3.autoType)
-        //   .then((data1) => {
+    // Import CSV data using async function
 
-        // d3.csv("Recycling_Diversion_and_Capture_Rates.csv", d3.autoType)
-        //     .then((data2) => {
+    const dataFunc = async function () {
+      const data1 = await d3.csv("Public_Recycling_Bins.csv", d3.autoType);
+      const data2 = await d3.csv("Recycling_Diversion_and_Capture_Rates.csv", d3.autoType);
+      const data3 = await d3.csv("New_York_City_Population_by_Borough.csv", d3.autoType);
 
-        // d3.csv("New_York_City_Population_by_Borough__1950_-_2040.csv", d3.autoType)
-        //         .then((data3) => {
+      let bronx = 0;
+      let queens = 0;
+      let manhattan = 0;
+      let brooklyn = 0;
+      let staten_island = 0;
+      data1.forEach(function (d) {
+        if (d.Borough == 'Bronx') {
+          bronx++;
+        }
+        else if (d.Borough == 'Queens') {
+          queens++;
+        }
+        else if (d.Borough == 'Manhattan') {
+          manhattan++;
+        }
+        else if (d.Borough == 'Brooklyn') {
+          brooklyn++;
+        }
+        else {
+          staten_island++;
+        }
+      });
 
-        const data1 = await d3.csv("Public_Recycling_Bins.csv", d3.autoType);
-        const data2 = await d3.csv("Recycling_Diversion_and_Capture_Rates.csv", d3.autoType);
-        const data3 = await d3.csv("New_York_City_Population_by_Borough.csv", d3.autoType);
+      let bronx_recycling = 0;
+      let bronx_zones = 0;
+      let queens_recycling = 0;
+      let queens_zones = 0;
+      let manhattan_recycling = 0;
+      let manhattan_zones = 0;
+      let brooklyn_recycling = 0;
+      let brooklyn_zones = 0;
+      let staten_island_recycling = 0;
+      let staten_island_zones = 0;
+      data2.forEach(function (d) {
+        if (d.Zone == 'Bronx') {
+          bronx_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
+          bronx_zones++;
+        }
+        else if (d.Zone == 'Queens') {
+          queens_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
+          queens_zones++;
+        }
+        else if (d.Zone == 'Manhattan') {
+          manhattan_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
+          manhattan_zones++;
+        }
+        else if (d.Zone == 'Brooklyn') {
+          brooklyn_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
+          brooklyn_zones++;
+        }
+        else {
+          staten_island_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
+          staten_island_zones++;
+        }
+      });
 
-        let bronx = 0;
-        let queens = 0;
-        let manhattan = 0;
-        let brooklyn = 0;
-        let staten_island = 0;
-        data1.forEach(function (d) {
-          if (d.Borough == 'Bronx') {
-            bronx++;
-          }
-          else if (d.Borough == 'Queens') {
-            queens++;
-          }
-          else if (d.Borough == 'Manhattan') {
-            manhattan++;
-          }
-          else if (d.Borough == 'Brooklyn') {
-            brooklyn++;
-          }
-          else {
-            staten_island++;
-          }
-        });
+      recycling_data = [{ borough: "Bronx", bins: bronx, avg_recycling: bronx_recycling / bronx_zones },
+      { borough: "Queens", bins: queens, avg_recycling: queens_recycling / queens_zones },
+      { borough: "Manhattan", bins: manhattan, avg_recycling: manhattan_recycling / manhattan_zones },
+      { borough: "Brooklyn", bins: brooklyn, avg_recycling: brooklyn_recycling / brooklyn_zones },
+      { borough: "Staten Island", bins: staten_island, avg_recycling: staten_island_recycling / staten_island_zones }];
+      console.log(recycling_data);
 
-        let bronx_recycling = 0;
-        let bronx_zones = 0;
-        let queens_recycling = 0;
-        let queens_zones = 0;
-        let manhattan_recycling = 0;
-        let manhattan_zones = 0;
-        let brooklyn_recycling = 0;
-        let brooklyn_zones = 0;
-        let staten_island_recycling = 0;
-        let staten_island_zones = 0;
-        data2.forEach(function (d) {
-          if (d.Zone == 'Bronx') {
-            bronx_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
-            bronx_zones ++;
-          }
-          else if (d.Zone == 'Queens') {
-            queens_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
-            queens_zones ++;
-          }
-          else if (d.Zone == 'Manhattan') {
-            manhattan_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
-            manhattan_zones ++;
-          }
-          else if (d.Zone == 'Brooklyn') {
-            brooklyn_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
-            brooklyn_zones ++;
-          }
-          else {
-            staten_island_recycling += d["Diversion Rate-Total (Total Recycling / Total Waste)"];
-            staten_island_zones ++;
-          }
-        });
+      // BAR CHART
 
-        recycling_data = [{ borough : "Bronx", bins : bronx, avg_recycling : bronx_recycling/bronx_zones },
-                          { borough : "Queens", bins: queens, avg_recycling : queens_recycling/queens_zones  },
-                          { borough : "Manhattan", bins: manhattan, avg_recycling : manhattan_recycling/manhattan_zones  },
-                          { borough : "Brooklyn", bins: brooklyn, avg_recycling : brooklyn_recycling/brooklyn_zones  },
-                          { borough : "Staten Island", bins: staten_island, avg_recycling : staten_island_recycling/staten_island_zones }];
-        console.log(recycling_data);
+      const bur = d3.map(data3, d => d['Borough']);
+      const burScale = d3.scaleBand().domain(bur).range([0, chartWidth]).padding(0.05);
 
-        // BAR CHART
+      let bottomAxis = d3.axisBottom(burScale)
+      annotations.append("g")
+        .attr("class", "x axis")
+        .attr("transform", `translate(${margin.left},${chartHeight + margin.top + 10})`)
+        .call(bottomAxis);
 
-        const bur = d3.map(data3, d => d['Borough']);
-        const burScale = d3.scaleBand().domain(bur).range([0, chartWidth]).padding(0.05);
+      const popExtent = d3.extent(data3, d => d['2020']);
+      const popScale = d3.scaleLinear().domain(popExtent).range([chartHeight - 60, 0]);
 
-        let bottomAxis = d3.axisBottom(burScale)
-        annotations.append("g")
-          .attr("class", "x axis")
-          .attr("transform", `translate(${margin.left},${chartHeight + margin.top + 10})`)
-          .call(bottomAxis);
+      const colorScale = d3.scaleOrdinal().domain(['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island'])
+        .range(['blue', 'green', 'red', 'purple', 'cyan']);
 
-        const popExtent = d3.extent(data3, d => d['2020']);
-        const popScale = d3.scaleLinear().domain(popExtent).range([chartHeight - 60, 0]);
+      svg_bar.append("text").text("Population by Borough").attr("x", 10).attr("y", 20).style("font-size", "25px");
 
-        const colorScale = d3.scaleOrdinal().domain(['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island'])
-          .range(['blue', 'green', 'red', 'purple', 'cyan']);
+      chartArea.selectAll('rect.bar').data(data3)
+        .join('rect')
+        .attr('class', 'bar')
+        .attr("fill", d => colorScale(d['Borough']))
+        .attr("x", d => burScale(d['Borough']))
+        .attr("y", d => popScale(d['2020']))
+        .attr("opacity", 0.2)
+        .attr("height", d => chartHeight - popScale(d['2020']))
+        .attr("width", burScale.bandwidth());
 
-        svg_bar.append("text").text("Population by Borough").attr("x", 10).attr("y", 20).style("font-size", "25px");
+      chartArea.selectAll('text.bar').data(data3)
+        .join('text')
+        .attr('class', 'bar')
+        .attr("text-anchor", "middle")
+        .attr("font-size", "15px")
+        .attr("x", d => burScale(d['Borough']) + 50)
+        .attr('y', d => popScale(d['2020']) - 10)
+        .text(d => d['2020']);
 
-        chartArea.selectAll('rect.bar').data(data3)
-          .join('rect')
-          .attr('class', 'bar')
-          .attr("fill", d => colorScale(d['Borough']))
-          .attr("x", d => burScale(d['Borough']))
-          .attr("y", d => popScale(d['2020']))
-          .attr("opacity", 0.2)
-          .attr("height", d => chartHeight - popScale(d['2020']))
-          .attr("width", burScale.bandwidth());
+      const bur1 = d3.map(recycling_data, d => d.borough);
+      const burScale1 = d3.scaleBand().domain(bur1).range([0, chartWidth]).padding(0.05);
 
-        chartArea.selectAll('text.bar').data(data3)
-          .join('text')
-          .attr('class', 'bar')
-          .attr("text-anchor", "middle")
-          .attr("font-size", "15px")
-          .attr("x", d => burScale(d['Borough']) + 50)
-          .attr('y', d => popScale(d['2020']) - 10)
-          .text(d => d['2020']);
+      let bottomAxis1 = d3.axisBottom(burScale1)
+      annotations1.append("g")
+        .attr("class", "x axis")
+        .attr("transform", `translate(${margin.left},${chartHeight + margin.top + 10})`)
+        .call(bottomAxis1);
 
-        const bur1 = d3.map(recycling_data, d => d.borough);
-        const burScale1 = d3.scaleBand().domain(bur1).range([0, chartWidth]).padding(0.05);
+      const binsExtent = d3.extent(recycling_data, d => d.bins);
+      const binsScale = d3.scaleLinear().domain(binsExtent).range([chartHeight - 60, 0]);
 
-        let bottomAxis1 = d3.axisBottom(burScale1)
-        annotations1.append("g")
-          .attr("class", "x axis")
-          .attr("transform", `translate(${margin.left},${chartHeight + margin.top + 10})`)
-          .call(bottomAxis1);
+      svg_bar1.append("text").text("Number of Public Recycling Bins by Borough").attr("x", 10).attr("y", 20).style("font-size", "25px");
 
-        const binsExtent = d3.extent(recycling_data, d => d.bins);
-        const binsScale = d3.scaleLinear().domain(binsExtent).range([chartHeight - 60, 0]);
+      chartArea1.selectAll('rect.bar1').data(recycling_data)
+        .join('rect')
+        .attr('class', 'bar1')
+        .attr("fill", d => colorScale(d.borough))
+        .attr("x", d => burScale1(d.borough))
+        .attr("y", d => binsScale(d.bins))
+        .attr("opacity", 0.2)
+        .attr("height", d => chartHeight - binsScale(d.bins))
+        .attr("width", burScale1.bandwidth());
 
-        svg_bar1.append("text").text("Number of Public Recycling Bins by Borough").attr("x", 10).attr("y", 20).style("font-size", "25px");
+      chartArea1.selectAll('text.bar1').data(recycling_data)
+        .join('text')
+        .attr('class', 'bar1')
+        .attr("text-anchor", "middle")
+        .attr("font-size", "15px")
+        .attr("x", d => burScale1(d.borough) + 50)
+        .attr('y', d => binsScale(d.bins) - 10)
+        .text(d => d.bins);
 
-        chartArea1.selectAll('rect.bar1').data(recycling_data)
-          .join('rect')
-          .attr('class', 'bar1')
-          .attr("fill", d => colorScale(d.borough))
-          .attr("x", d => burScale1(d.borough))
-          .attr("y", d => binsScale(d.bins))
-          .attr("opacity", 0.2)
-          .attr("height", d => chartHeight - binsScale(d.bins))
-          .attr("width", burScale1.bandwidth());
+      // SCATTERPLOT
 
-        chartArea1.selectAll('text.bar1').data(recycling_data)
-          .join('text')
-          .attr('class', 'bar1')
-          .attr("text-anchor", "middle")
-          .attr("font-size", "15px")
-          .attr("x", d => burScale1(d.borough) + 50)
-          .attr('y', d => binsScale(d.bins) - 10)
-          .text(d => d.bins);
+      const svg_scatter_1 = d3.select("svg#scatterplot1");
+      const scatter_width = svg_scatter_1.attr("width");
+      const scatter_height = svg_scatter_1.attr("height");
+      const scatterPixelWidth = scatter_width - margin.left - margin.right;
+      const scatterPixelHeight = scatter_height - margin.top - margin.bottom;
 
-        // SCATTERPLOT
+      // Scales
+      const binsExtentScatter = d3.extent(recycling_data, d => d.bins);
+      binsExtentScatter[1] = binsExtentScatter[1] + 20;
+      console.log(binsExtentScatter);
+      const binsScaleScatter = d3.scaleLinear().domain(binsExtentScatter).range([0, scatterPixelWidth]);
 
-        const svg_scatter_1 = d3.select("svg#scatterplot1");
-        const scatter_width = svg_scatter_1.attr("width");
-        const scatter_height = svg_scatter_1.attr("height");
-        const scatterPixelWidth = scatter_width - margin.left - margin.right;
-        const scatterPixelHeight = scatter_height - margin.top - margin.bottom;
+      const recyclingExtent = d3.extent(recycling_data, d => d.avg_recycling);
+      console.log(recyclingExtent);
+      const recyclingScale = d3.scaleLinear().domain(recyclingExtent).range([scatterPixelHeight, 0]);
 
-        // Scales
-        const binsExtentScatter = d3.extent(recycling_data, d => d.bins);
-        binsExtentScatter[1] = binsExtentScatter[1]+20;
-        console.log(binsExtentScatter);
-        const binsScaleScatter = d3.scaleLinear().domain(binsExtentScatter).range([0, scatterPixelWidth ]);
+      // const imdbExtent = d3.extent(data, d => d['imdb_rating']);
+      // const imdbScale = d3.scaleLinear().domain(imdbExtent).range([3, 8]);
+      // const genreScale = d3.scaleOrdinal(d3.schemeCategory10);
 
-        const recyclingExtent = d3.extent(recycling_data, d => d.avg_recycling);
-        console.log(recyclingExtent);
-        const recyclingScale = d3.scaleLinear().domain(recyclingExtent).range([scatterPixelHeight, 0]);
+      // Y axis
+      let leftAxisScatter1 = d3.axisLeft(recyclingScale)
+      //  .tickFormat(d3.format("$.0s"))
+      let leftGridlinesScatter1 = d3.axisLeft(recyclingScale)
+        .tickSize(-scatterPixelWidth - 10)
+        .tickFormat("")
+      svg_scatter_1.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
+        .call(leftAxisScatter1)
+      svg_scatter_1.append("g")
+        .attr("class", "y gridlines")
+        .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
+        .call(leftGridlinesScatter1);
 
-        // const imdbExtent = d3.extent(data, d => d['imdb_rating']);
-        // const imdbScale = d3.scaleLinear().domain(imdbExtent).range([3, 8]);
-        // const genreScale = d3.scaleOrdinal(d3.schemeCategory10);
+      // X axis
+      let bottomAxisScatter1 = d3.axisBottom(binsScaleScatter)
+        .tickFormat(d3.format("~f"));
+      let bottomGridlinesScatter1 = d3.axisBottom(binsScaleScatter)
+        .tickSize(-chartHeight - 10)
+        .tickFormat("")
+      svg_scatter_1.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top + 10) + ")")
+        .call(bottomAxisScatter1);
+      svg_scatter_1.append("g")
+        .attr("class", "x gridlines")
+        .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top + 10) + ")")
+        .call(bottomGridlinesScatter1);
 
-        // Y axis
-        let leftAxisScatter1 = d3.axisLeft(recyclingScale)
-        //  .tickFormat(d3.format("$.0s"))
-        let leftGridlinesScatter1 = d3.axisLeft(recyclingScale)
-          .tickSize(-scatterPixelWidth - 10)
-          .tickFormat("")
-        svg_scatter_1.append("g")
-          .attr("class", "y axis")
-          .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
-          .call(leftAxisScatter1)
-        svg_scatter_1.append("g")
-          .attr("class", "y gridlines")
-          .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
-          .call(leftGridlinesScatter1);
+      svg_scatter_1.selectAll("circle").data(recycling_data)
+        .join("circle")
+        .attr("cx", d => (binsScaleScatter(d.bins) + margin.left))
+        .attr("cy", d => (recyclingScale(d.avg_recycling) + margin.top))
+        .attr("r", d => 5)
+        .style("fill", "green")
+        .attr("opacity", 0.8);
 
-        // X axis
-        let bottomAxisScatter1 = d3.axisBottom(binsScaleScatter)
-          .tickFormat(d3.format("~f"));
-        let bottomGridlinesScatter1 = d3.axisBottom(binsScaleScatter)
-          .tickSize(-chartHeight - 10)
-          .tickFormat("")
-        svg_scatter_1.append("g")
-          .attr("class", "x axis")
-          .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top + 10) + ")")
-          .call(bottomAxisScatter1);
-        svg_scatter_1.append("g")
-          .attr("class", "x gridlines")
-          .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top + 10) + ")")
-          .call(bottomGridlinesScatter1);
+      svg_scatter_1.selectAll("text.scatter1").data(recycling_data)
+        .join("text")
+        .attr("x", d => (binsScaleScatter(d.bins) + margin.left))
+        .attr("y", d => (recyclingScale(d.avg_recycling) + margin.top - 10))
+        .attr('class', 'scatter1')
+        .attr("text-anchor", "right")
+        .text(d => d.borough)
+        .style("font-size", "10px")
+        .attr("opacity", 0.7);
+    };
 
-        svg_scatter_1.selectAll("circle").data(recycling_data)
-                       .join("circle")
-                       .attr("cx", d => (binsScaleScatter(d.bins) + margin.left))
-                       .attr("cy", d => (recyclingScale(d.avg_recycling) + margin.top))
-                       .attr("r", d => 5)
-                       .style("fill", "green")
-                       .attr("opacity", 0.8);
+    dataFunc();
 
-        svg_scatter_1.selectAll("text.scatter1").data(recycling_data)
-                      .join("text")
-                      .attr("x", d => (binsScaleScatter(d.bins) + margin.left))
-                      .attr("y", d => (recyclingScale(d.avg_recycling) + margin.top - 10))
-                      .attr('class', 'scatter1')
-                      .attr("text-anchor", "right")
-                      .text(d => d.borough)
-                      .style("font-size","10px")
-                      .attr("opacity", 0.7);
-      };
+  </script>
 
-      dataFunc();
-
-    </script>
-
-  </div>
 </body>
 
 </html>
