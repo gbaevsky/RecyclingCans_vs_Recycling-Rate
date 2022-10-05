@@ -257,7 +257,7 @@
         .attr("cx", d => (binsScaleScatter(d.bins) + margin.left))
         .attr("cy", d => (recyclingScale(d.avg_recycling) + margin.top))
         .attr("r", d => 5)
-        .style("fill", "green")
+        .attr("fill", d => colorScale(d.borough))
         .attr("opacity", 0.8);
 
       svg_scatter_1.selectAll("text.scatter1").data(recycling_data)
