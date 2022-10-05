@@ -27,6 +27,9 @@
     <svg id="barchart" height="400" width="600" style="background: #F5F5FF">
     </svg>
 
+    <svg id="barchart1" height="400" width="600" style="background: #F5F5FF">
+    </svg>
+
     <svg id="scatterplot1" height="400" width="600" style="margin-top:50px">
       <text id="label" x="590" y="5" text-anchor="end" alignment-baseline="hanging"></text>
     </svg>
@@ -43,6 +46,14 @@
 
       let annotations = svg_bar.append("g").attr("id", "annotations");
       let chartArea = svg_bar.append("g").attr("id", "points")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+
+
+      const svg_bar1 = d3.select("svg#barchart1");
+
+      let annotations1 = svg_bar1.append("g").attr("id", "annotations");
+      let chartArea1 = svg_bar1.append("g").attr("id", "points")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
       // let annotations = svg.append("g").attr("id", "annotations");
@@ -142,19 +153,18 @@
         const popExtent = d3.extent(data3, d => d['2020']);
         const popScale = d3.scaleLinear().domain(popExtent).range([chartHeight - 60, 0]);
 
-        let colorScale = d3.scaleLinear()
-          .domain([0, 1])
-          .range(['navy', 'turquoise'])
-          .interpolate(d3.interpolateHcl);
+        const colorScale = d3.scaleOrdinal().domain(['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island'])
+          .range(['blue', 'green', 'red', 'purple', 'cyan']);
 
-        svg_bar.append("text").text("Population by Borough").attr("x", 10).attr("y", 20).style("font-size", "15px");
+        svg_bar.append("text").text("Population by Borough").attr("x", 10).attr("y", 20).style("font-size", "25px");
 
         chartArea.selectAll('rect.bar').data(data3)
           .join('rect')
           .attr('class', 'bar')
-          .attr("fill", "black")
+          .attr("fill", d => colorScale(d['Borough']))
           .attr("x", d => burScale(d['Borough']))
           .attr("y", d => popScale(d['2020']))
+          .attr("opacity", 0.2)
           .attr("height", d => chartHeight - popScale(d['2020']))
           .attr("width", burScale.bandwidth());
 
@@ -162,13 +172,43 @@
           .join('text')
           .attr('class', 'bar')
           .attr("text-anchor", "middle")
-          .attr("font-size", "10px")
+          .attr("font-size", "15px")
           .attr("x", d => burScale(d['Borough']) + 50)
           .attr('y', d => popScale(d['2020']) - 10)
           .text(d => d['2020']);
 
-        // const binsExtent = d3.extent([bronx, queens, manhattan, brooklyn, staten_island]);
-        // const binsScale = d3.scaleLinear().domain(binsExtent).range([10, chartWidth]);
+        const bur1 = d3.map(recycling_data, d => d.borough);
+        const burScale1 = d3.scaleBand().domain(bur1).range([0, chartWidth]).padding(0.05);
+
+        let bottomAxis1 = d3.axisBottom(burScale1)
+        annotations1.append("g")
+          .attr("class", "x axis")
+          .attr("transform", `translate(${margin.left},${chartHeight + margin.top + 10})`)
+          .call(bottomAxis1);
+
+        const binsExtent = d3.extent(recycling_data, d => d.bins);
+        const binsScale = d3.scaleLinear().domain(binsExtent).range([chartHeight - 60, 0]);
+
+        svg_bar1.append("text").text("Number of Public Recycling Bins by Borough").attr("x", 10).attr("y", 20).style("font-size", "25px");
+
+        chartArea1.selectAll('rect.bar1').data(recycling_data)
+          .join('rect')
+          .attr('class', 'bar1')
+          .attr("fill", d => colorScale(d.borough))
+          .attr("x", d => burScale1(d.borough))
+          .attr("y", d => binsScale(d.bins))
+          .attr("opacity", 0.2)
+          .attr("height", d => chartHeight - binsScale(d.bins))
+          .attr("width", burScale1.bandwidth());
+
+        chartArea1.selectAll('text.bar1').data(recycling_data)
+          .join('text')
+          .attr('class', 'bar1')
+          .attr("text-anchor", "middle")
+          .attr("font-size", "15px")
+          .attr("x", d => burScale1(d.borough) + 50)
+          .attr('y', d => binsScale(d.bins) - 10)
+          .text(d => d.bins);
 
         // SCATTERPLOT
 
@@ -179,10 +219,10 @@
         const scatterPixelHeight = scatter_height - margin.top - margin.bottom;
 
         // Scales
-        const binsExtent = d3.extent(recycling_data, d => d.bins);
-        binsExtent[1] = binsExtent[1]+20;
-        console.log(binsExtent);
-        const binsScale = d3.scaleLinear().domain(binsExtent).range([0, scatterPixelWidth ]);
+        const binsExtentScatter = d3.extent(recycling_data, d => d.bins);
+        binsExtentScatter[1] = binsExtentScatter[1]+20;
+        console.log(binsExtentScatter);
+        const binsScaleScatter = d3.scaleLinear().domain(binsExtentScatter).range([0, scatterPixelWidth ]);
 
         const recyclingExtent = d3.extent(recycling_data, d => d.avg_recycling);
         console.log(recyclingExtent);
@@ -208,9 +248,9 @@
           .call(leftGridlinesScatter1);
 
         // X axis
-        let bottomAxisScatter1 = d3.axisBottom(binsScale)
+        let bottomAxisScatter1 = d3.axisBottom(binsScaleScatter)
           .tickFormat(d3.format("~f"));
-        let bottomGridlinesScatter1 = d3.axisBottom(binsScale)
+        let bottomGridlinesScatter1 = d3.axisBottom(binsScaleScatter)
           .tickSize(-chartHeight - 10)
           .tickFormat("")
         svg_scatter_1.append("g")
@@ -224,7 +264,7 @@
 
         svg_scatter_1.selectAll("circle").data(recycling_data)
                        .join("circle")
-                       .attr("cx", d => (binsScale(d.bins) + margin.left))
+                       .attr("cx", d => (binsScaleScatter(d.bins) + margin.left))
                        .attr("cy", d => (recyclingScale(d.avg_recycling) + margin.top))
                        .attr("r", d => 5)
                        .style("fill", "green")
@@ -232,7 +272,7 @@
 
         svg_scatter_1.selectAll("text.scatter1").data(recycling_data)
                       .join("text")
-                      .attr("x", d => (binsScale(d.bins) + margin.left))
+                      .attr("x", d => (binsScaleScatter(d.bins) + margin.left))
                       .attr("y", d => (recyclingScale(d.avg_recycling) + margin.top - 10))
                       .attr('class', 'scatter1')
                       .attr("text-anchor", "right")
