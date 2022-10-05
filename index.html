@@ -150,7 +150,8 @@
         }
       });
 
-      recycling_data = [{ borough: "Bronx", bins: bronx, population: bronx_pop, avg_recycling: bronx_recycling / bronx_zones },
+      recycling_data =
+      [{ borough: "Bronx", bins: bronx, population: bronx_pop, avg_recycling: bronx_recycling / bronx_zones },
       { borough: "Queens", bins: queens, population: queens_pop, avg_recycling: queens_recycling / queens_zones },
       { borough: "Manhattan", bins: manhattan, population: manhattan_pop, avg_recycling: manhattan_recycling / manhattan_zones },
       { borough: "Brooklyn", bins: brooklyn, population: brooklyn_pop, avg_recycling: brooklyn_recycling / brooklyn_zones },
@@ -244,14 +245,9 @@
       const recyclingExtent = d3.extent(recycling_data, d => d.avg_recycling);
       const recyclingScale = d3.scaleLinear().domain(recyclingExtent).range([scatterPixelHeight, 0]);
 
-      // const imdbExtent = d3.extent(data, d => d['imdb_rating']);
-      // const imdbScale = d3.scaleLinear().domain(imdbExtent).range([3, 8]);
-      // const genreScale = d3.scaleOrdinal(d3.schemeCategory10);
-
       svg_scatter_1.append("text").text("Recycling Rate vs Recycling Bins").attr("x", 10).attr("y", 20).style("font-size", "25px");
       // Y axis
       let leftAxisScatter1 = d3.axisLeft(recyclingScale)
-      //  .tickFormat(d3.format("$.0s"))
       let leftGridlinesScatter1 = d3.axisLeft(recyclingScale)
         .tickSize(-scatterPixelWidth - 10)
         .tickFormat("")
@@ -266,7 +262,6 @@
 
       // X axis
       let bottomAxisScatter1 = d3.axisBottom(binsScaleScatter)
-        .tickFormat(d3.format("~f"));
       let bottomGridlinesScatter1 = d3.axisBottom(binsScaleScatter)
         .tickSize(-chartHeight - 10)
         .tickFormat("")
@@ -306,13 +301,9 @@
       binsPerPersonExtentScatter[1] = binsPerPersonExtentScatter[1] + 0.00001; // give more space
       const binsPerPersonScaleScatter = d3.scaleLinear().domain(binsPerPersonExtentScatter).range([0, scatterPixelWidth]);
 
-      // const imdbExtent = d3.extent(data, d => d['imdb_rating']);
-      // const imdbScale = d3.scaleLinear().domain(imdbExtent).range([3, 8]);
-      // const genreScale = d3.scaleOrdinal(d3.schemeCategory10);
-
       svg_scatter_2.append("text").text("Recycling Rate vs People per Recycling Bin").attr("x", 10).attr("y", 20).style("font-size", "25px");
       // Y axis
-      // reusing scales from scatterplot 1:
+      // reusing Y scales from scatterplot 1:
       svg_scatter_2.append("g")
         .attr("class", "y axis")
         .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
