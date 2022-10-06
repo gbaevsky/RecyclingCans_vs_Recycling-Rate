@@ -120,17 +120,8 @@ h4 {  font-weight: 400; font-size: 1rem; line-height: 1.1;  letter-spacing: 0; }
   </svg> <br>
 
 
-<<<<<<< HEAD
   <svg id="scatterplot1" height="400" width="450" style="margin-top:30px">
     <text id="label" x="590" y="5" text-anchor="end" alignment-baseline="hanging"></text>
-=======
-  <svg id="scatterplot1" height="400" width="600" style="margin-top:50px">
-    <text id="label_scatter_1" x="590" y="5" text-anchor="end" alignment-baseline="hanging"></text>
-  </svg>
-
-  <svg id="scatterplot2" height="400" width="600" style="margin-top:50px">
-    <text id="label_scatter_2" x="590" y="5" text-anchor="end" alignment-baseline="hanging"></text>
->>>>>>> ef391efce0a4efc7ffeeb310ae14a780dd9525b7
   </svg>
  
 
@@ -229,7 +220,6 @@ h4 {  font-weight: 400; font-size: 1rem; line-height: 1.1;  letter-spacing: 0; }
         }
       });
 
-<<<<<<< HEAD
       //DIAGRAM DATA PROCESSING
 
       let b = Math.round(bronx/10);
@@ -282,38 +272,6 @@ h4 {  font-weight: 400; font-size: 1rem; line-height: 1.1;  letter-spacing: 0; }
       { borough: "Manhattan", bins: manhattan, population: manhattanpop, avg_recycling: manhattan_recycling / manhattan_zones },
       { borough: "Queens", bins: queens, population: queenspop, avg_recycling: queens_recycling / queens_zones },
       { borough: "Staten Island", bins: staten_island, population: statenpop, avg_recycling: staten_island_recycling / staten_island_zones }];
-=======
-      let bronx_pop = 0;
-      let queens_pop = 0;
-      let manhattan_pop = 0;
-      let brooklyn_pop = 0;
-      let staten_island_pop = 0;
-      data3.forEach(function (d) {
-        let pop = d['2020'];
-        if (d.Borough == '   Bronx') {
-          bronx_pop = pop;
-        }
-        else if (d.Borough == '   Queens') {
-          queens_pop = d['2020'];
-        }
-        else if (d.Borough == '   Manhattan') {
-          manhattan_pop = d['2020'];
-        }
-        else if (d.Borough == '   Brooklyn') {
-          brooklyn_pop = d['2020'];
-        }
-        else {
-          staten_island_pop = d['2020'];
-        }
-      });
-
-      recycling_data =
-      [{ borough: "Bronx", bins: bronx, population: bronx_pop, avg_recycling: bronx_recycling / bronx_zones },
-      { borough: "Queens", bins: queens, population: queens_pop, avg_recycling: queens_recycling / queens_zones },
-      { borough: "Manhattan", bins: manhattan, population: manhattan_pop, avg_recycling: manhattan_recycling / manhattan_zones },
-      { borough: "Brooklyn", bins: brooklyn, population: brooklyn_pop, avg_recycling: brooklyn_recycling / brooklyn_zones },
-      { borough: "Staten Island", bins: staten_island, population: staten_island_pop, avg_recycling: staten_island_recycling / staten_island_zones }];
->>>>>>> ef391efce0a4efc7ffeeb310ae14a780dd9525b7
       console.log(recycling_data);
 
       //DIAGRAMS
@@ -499,7 +457,6 @@ h4 {  font-weight: 400; font-size: 1rem; line-height: 1.1;  letter-spacing: 0; }
         .attr('y', d => binsScale(d.bins)-5)
         .text(d => d.bins);
 
-<<<<<<< HEAD
         //y axis scale   
          let leftAxisb2 = d3.axisLeft(binsScale)
          let leftGridlinesb2 = d3.axisLeft(binsScale)
@@ -525,8 +482,6 @@ h4 {  font-weight: 400; font-size: 1rem; line-height: 1.1;  letter-spacing: 0; }
         .style("font-size", "12px")
         .text("Number of Recycling Bins");
      
-=======
->>>>>>> ef391efce0a4efc7ffeeb310ae14a780dd9525b7
       // SCATTERPLOT 1: Recycling Rate vs Bins
 
       const svg_scatter_1 = d3.select("svg#scatterplot1");
@@ -537,7 +492,6 @@ h4 {  font-weight: 400; font-size: 1rem; line-height: 1.1;  letter-spacing: 0; }
 
       // Scales
       const binsExtentScatter = d3.extent(recycling_data, d => d.bins);
-<<<<<<< HEAD
       binsExtentScatter[1] = binsExtentScatter[1] +50; // give more space
       const binsScaleScatter = d3.scaleLinear().domain([15,215]).range([0, scatterPixelWidth]);
 
@@ -545,15 +499,6 @@ h4 {  font-weight: 400; font-size: 1rem; line-height: 1.1;  letter-spacing: 0; }
       const recyclingScale = d3.scaleLinear().domain([12,22]).range([scatterPixelHeight, 0]);
 
       svg_scatter_1.append("text").text("Recycling Rate vs Recycling Bins").attr("x", 0).attr("y", 30).style("font-size", "22px").style("font-weight", "600");
-=======
-      binsExtentScatter[1] = binsExtentScatter[1] + 20; // give more space
-      const binsScaleScatter = d3.scaleLinear().domain(binsExtentScatter).range([0, scatterPixelWidth]);
-
-      const recyclingExtent = d3.extent(recycling_data, d => d.avg_recycling);
-      const recyclingScale = d3.scaleLinear().domain(recyclingExtent).range([scatterPixelHeight, 0]);
-
-      svg_scatter_1.append("text").text("Recycling Rate vs Recycling Bins").attr("x", 10).attr("y", 20).style("font-size", "25px");
->>>>>>> ef391efce0a4efc7ffeeb310ae14a780dd9525b7
       // Y axis
       let leftAxisScatter1 = d3.axisLeft(recyclingScale)
       let leftGridlinesScatter1 = d3.axisLeft(recyclingScale)
@@ -587,7 +532,6 @@ h4 {  font-weight: 400; font-size: 1rem; line-height: 1.1;  letter-spacing: 0; }
         .join("circle")
         .attr("cx", d => (binsScaleScatter(d.bins) + margin.left))
         .attr("cy", d => (recyclingScale(d.avg_recycling) + margin.top))
-<<<<<<< HEAD
         .attr("r", d => 30)
         .attr("fill", d => colorScale(d.borough))
         .attr("opacity", 0.9);
@@ -599,11 +543,6 @@ h4 {  font-weight: 400; font-size: 1rem; line-height: 1.1;  letter-spacing: 0; }
         .attr("r", d => 3)
         .attr("fill", "green")
         .attr("opacity", 1);
-=======
-        .attr("r", d => 5)
-        .attr("fill", d => colorScale(d.borough))
-        .attr("opacity", 0.8);
->>>>>>> ef391efce0a4efc7ffeeb310ae14a780dd9525b7
 
       svg_scatter_1.selectAll("text.scatter1").data(recycling_data)
         .join("text")
@@ -613,7 +552,6 @@ h4 {  font-weight: 400; font-size: 1rem; line-height: 1.1;  letter-spacing: 0; }
         .attr("text-anchor", "middle")
         .text(d => d.borough)
         .style("font-size", "10px")
-<<<<<<< HEAD
         .attr("opacity", 1);
 
       svg_scatter_1.append("text")
@@ -633,16 +571,10 @@ h4 {  font-weight: 400; font-size: 1rem; line-height: 1.1;  letter-spacing: 0; }
         .style("font-size", "12px")
         .text("Recycling Rate % (recycling/waste)");
           
-=======
-        .attr("opacity", 0.7);
-
-
->>>>>>> ef391efce0a4efc7ffeeb310ae14a780dd9525b7
       // SCATTERPLOT 2: Recycling Rate vs Bins per person
       const svg_scatter_2 = d3.select("svg#scatterplot2");
 
       // Scales
-<<<<<<< HEAD
 
       const binsPerPersonExtentScatter = d3.extent(recycling_data, d => (d.bins/ d.population));
       console.log('binsPerPersonExtentScatter',binsPerPersonExtentScatter);
@@ -651,13 +583,6 @@ h4 {  font-weight: 400; font-size: 1rem; line-height: 1.1;  letter-spacing: 0; }
       const binsPerPersonScaleScatter = d3.scaleLinear().domain(binsPerPersonExtentScatter).range([0, scatterPixelWidth]);
 svg_scatter_2
       svg_scatter_2.append("text").text("Recycling Rate vs Bin Per 1000 People").attr("x", 0).attr("y", 30).style("font-size", "22px").style("font-weight", "600");
-=======
-      const binsPerPersonExtentScatter = d3.extent(recycling_data, d => (d.bins / d.population));
-      binsPerPersonExtentScatter[1] = binsPerPersonExtentScatter[1] + 0.00001; // give more space
-      const binsPerPersonScaleScatter = d3.scaleLinear().domain(binsPerPersonExtentScatter).range([0, scatterPixelWidth]);
-
-      svg_scatter_2.append("text").text("Recycling Rate vs People per Recycling Bin").attr("x", 10).attr("y", 20).style("font-size", "25px");
->>>>>>> ef391efce0a4efc7ffeeb310ae14a780dd9525b7
       // Y axis
       // reusing Y scales from scatterplot 1:
       svg_scatter_2.append("g")
@@ -680,17 +605,12 @@ svg_scatter_2
         .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top + 10) + ")")
         .call(bottomAxisScatter2);
       svg_scatter_2.append("g")
-<<<<<<< HEAD
         .attr("class", "gridlines")
-=======
-        .attr("class", "x gridlines")
->>>>>>> ef391efce0a4efc7ffeeb310ae14a780dd9525b7
         .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top + 10) + ")")
         .call(bottomGridlinesScatter2);
 
       svg_scatter_2.selectAll("circle").data(recycling_data)
         .join("circle")
-<<<<<<< HEAD
         .attr("cx", d => (binsPerPersonScaleScatter(d.bins/ d.population ) + margin.left))
         .attr("cy", d => (recyclingScale(d.avg_recycling) + margin.top))
         .attr("r", d => 30)
@@ -731,24 +651,6 @@ svg_scatter_2
         .style("font-size", "12px")
         .text("Recycling Rate % (recycling/waste)");
             };
-=======
-        .attr("cx", d => (binsPerPersonScaleScatter(d.bins / d.population) + margin.left))
-        .attr("cy", d => (recyclingScale(d.avg_recycling) + margin.top))
-        .attr("r", d => 5)
-        .attr("fill", d => colorScale(d.borough))
-        .attr("opacity", 0.8);
-
-      svg_scatter_2.selectAll("text.scatter2").data(recycling_data)
-        .join("text")
-        .attr("x", d => (binsPerPersonScaleScatter(d.bins / d.population) + margin.left))
-        .attr("y", d => (recyclingScale(d.avg_recycling) + margin.top - 10))
-        .attr('class', 'scatter1')
-        .attr("text-anchor", "right")
-        .text(d => d.borough)
-        .style("font-size", "10px")
-        .attr("opacity", 0.7);
-    };
->>>>>>> ef391efce0a4efc7ffeeb310ae14a780dd9525b7
 
     dataFunc();
   
