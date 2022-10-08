@@ -332,15 +332,15 @@
       showRec(svgd5, statenpopulation);
 
       svgd1.append("text").text("Bronx").attr("x", 0).attr("y", 30).style("font-size", "20px").style("font-weight", "550");
-      svgd1.append("text").text("7.7 bins per 1000 people").attr("x", 0).attr("y", 50).style("font-size", "14px").style("font-weight", "400");
+      svgd1.append("text").text(String(Math.round(recycling_data[0].bins / recycling_data[0].population * 10) / 10) + " bins per 1000 people").attr("x", 0).attr("y", 50).style("font-size", "14px").style("font-weight", "400");
       svgd4.append("text").text("Brooklyn").attr("x", 0).attr("y", 30).style("font-size", "20px").style("font-weight", "550");
-      svgd4.append("text").text("3.4 bins per 1000 people").attr("x", 0).attr("y", 50).style("font-size", "14px").style("font-weight", "400");
+      svgd4.append("text").text(String(Math.round(recycling_data[1].bins / recycling_data[1].population * 10) / 10) + " bins per 1000 people").attr("x", 0).attr("y", 50).style("font-size", "14px").style("font-weight", "400");
       svgd2.append("text").text("Queens").attr("x", 0).attr("y", 30).style("font-size", "20px").style("font-weight", "550");
-      svgd2.append("text").text("5.1 bins per 1000 people").attr("x", 0).attr("y", 50).style("font-size", "14px").style("font-weight", "400");
+      svgd2.append("text").text(String(Math.round(recycling_data[3].bins / recycling_data[3].population * 10) / 10) + " bins per 1000 people").attr("x", 0).attr("y", 50).style("font-size", "14px").style("font-weight", "400");
       svgd3.append("text").text("Manhattan").attr("x", 0).attr("y", 30).style("font-size", "20px").style("font-weight", "550");
-      svgd3.append("text").text("11.5 bins per 1000 people").attr("x", 0).attr("y", 50).style("font-size", "14px").style("font-weight", "400");
+      svgd3.append("text").text(String(Math.round(recycling_data[2].bins / recycling_data[2].population * 10) / 10) + " bins per 1000 people").attr("x", 0).attr("y", 50).style("font-size", "14px").style("font-weight", "400");
       svgd5.append("text").text("Staten Island").attr("x", 0).attr("y", 30).style("font-size", "20px").style("font-weight", "550");
-      svgd5.append("text").text("9.4 bins per 1000 people").attr("x", 0).attr("y", 50).style("font-size", "14px").style("font-weight", "400");
+      svgd5.append("text").text(String(Math.round(recycling_data[4].bins / recycling_data[4].population * 10) / 10) + " bins per 1000 people").attr("x", 0).attr("y", 50).style("font-size", "14px").style("font-weight", "400");
 
       // BAR CHART
       const bur = d3.map(data3, d => d['Borough']);
